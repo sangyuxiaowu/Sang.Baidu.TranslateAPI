@@ -4,7 +4,30 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <Version>1.0.1</Version>
+	  <Authors>SangSQ(桑世强)</Authors>
+	  <Description>百度翻译API</Description>
+	  <RepositoryType>git</RepositoryType>
+	  <RepositoryUrl>https://github.com/sangyuxiaowu/Sang.Baidu.TranslateAPI</RepositoryUrl>
+	  <PackageTags>Translate;fanyi;baidu</PackageTags>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	  <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Sang.CommonLibraries" Version="1.0.3" />
