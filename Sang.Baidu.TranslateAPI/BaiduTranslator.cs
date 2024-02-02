@@ -11,12 +11,12 @@ namespace Sang.Baidu.TranslateAPI
         /// <summary>
         /// APPID
         /// </summary>
-        private readonly string _appId;
+        private string _appId;
 
         /// <summary>
         /// 密钥
         /// </summary>
-        private readonly string _secretKey;
+        private string _secretKey;
 
         /// <summary>
         ///  翻译服务终结点
@@ -27,6 +27,7 @@ namespace Sang.Baidu.TranslateAPI
         /// HttpClient
         /// </summary>
         private readonly HttpClient _httpClient;
+
 
         /// <summary>
         /// 构造函数
@@ -40,6 +41,32 @@ namespace Sang.Baidu.TranslateAPI
             _secretKey = secretKey;
             _endpoint = endpoint;
             _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) }; // 设置超时时间
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="appId">APPID</param>
+        /// <param name="secretKey">密钥</param>
+        /// <param name="httpClient">HttpClient</param>
+        /// <param name="endpoint">翻译服务终结点</param>
+        public BaiduTranslator(string appId, string secretKey, HttpClient httpClient, string endpoint = "https://fanyi-api.baidu.com/api/trans/vip/translate")
+        {
+            _appId = appId;
+            _secretKey = secretKey;
+            _endpoint = endpoint;
+            _httpClient = httpClient;
+        }
+
+        /// <summary>
+        /// 重新设置appId 和 secretKey
+        /// </summary>
+        /// <param name="appId">APPID</param>
+        /// <param name="secretKey">密钥</param>
+        public void SetAppIdAndSecretKey(string appId, string secretKey)
+        {
+            _appId = appId;
+            _secretKey = secretKey;
         }
 
         /// <summary>
@@ -86,6 +113,14 @@ namespace Sang.Baidu.TranslateAPI
             {
                 return new BaiduTranslateResult { Error_Code = "Exception", Error_Msg = ex.Message };
             }
+        }
+
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
         }
 
     }
