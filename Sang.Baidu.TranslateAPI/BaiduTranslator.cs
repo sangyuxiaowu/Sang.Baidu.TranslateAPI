@@ -128,7 +128,36 @@ namespace Sang.Baidu.TranslateAPI
                 var response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
-                    return JsonSerializer.Deserialize<BaiduTranslateResult>(await response.Content.ReadAsStringAsync());
+                    var result = await response.Content.ReadAsStringAsync();
+                    var json = JsonDocument.Parse(result);
+                    var root = json.RootElement;
+
+                    // 是否存在错误码
+                    if (root.TryGetProperty("error_code", out var errorCode))
+                    {
+                        return new BaiduTranslateResult { Error_Code = errorCode.GetString(), Error_Msg = root.GetProperty("error_msg").GetString() };
+                    }
+
+                    var from = root.GetProperty("from").GetString();
+                    var to = root.GetProperty("to").GetString();
+
+                    var transResult = new List<TransResult>();
+                    for (int i = 0; i < root.GetProperty("trans_result").GetArrayLength(); i++)
+                    {
+                        var item = root.GetProperty("trans_result")[i];
+                        transResult.Add(new TransResult
+                        {
+                            Src = item.GetProperty("src").GetString(),
+                            Dst = item.GetProperty("dst").GetString()
+                        });
+                    }
+
+                    return new BaiduTranslateResult
+                    {
+                        From = from,
+                        To = to,
+                        Trans_Result = transResult
+                    };
                 }
                 return new BaiduTranslateResult { Error_Code = response.StatusCode.ToString(), Error_Msg = response.ReasonPhrase };
 #endif
