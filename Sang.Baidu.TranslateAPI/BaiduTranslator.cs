@@ -1,5 +1,14 @@
 ﻿using Sang.CommonLibraries.String;
+#if NET6_0_OR_GREATER
 using System.Net.Http.Json;
+#endif
+#if NET481_OR_GREATER
+using System;
+using System.Text.Json;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+#endif
 
 namespace Sang.Baidu.TranslateAPI
 {
@@ -107,7 +116,22 @@ namespace Sang.Baidu.TranslateAPI
             // 发送请求
             try
             {
-                return await _httpClient.GetFromJsonAsync<BaiduTranslateResult>(url);
+#if NET6_0_OR_GREATER
+                //return await _httpClient.GetFromJsonAsync<BaiduTranslateResult>(url);
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<BaiduTranslateResult>();
+                }
+                return new BaiduTranslateResult { Error_Code = response.StatusCode.ToString(), Error_Msg = response.ReasonPhrase };
+#else
+                var response = await _httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    return JsonSerializer.Deserialize<BaiduTranslateResult>(await response.Content.ReadAsStringAsync());
+                }
+                return new BaiduTranslateResult { Error_Code = response.StatusCode.ToString(), Error_Msg = response.ReasonPhrase };
+#endif
             }
             catch (Exception ex)
             {
